@@ -26,11 +26,14 @@ def check_parentheses(string):
 
 def main():
     run = True
+    # Creates a loop that runs until program is quit
     while run:
         to_check = input('What is your string (type q to quit)?: ')
+        # Checks if program is being quit
         if to_check == 'q':
             print('Thank you for using the program.')
             break
+        # Checks parentheses balance
         checked = check_parentheses(to_check)
         if checked:
             print('The parentheses are balanced.')
