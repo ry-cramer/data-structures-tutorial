@@ -57,6 +57,18 @@ while not end:
 
 The text itself is simply a list of all the previous inputs of the user. When the user inputs a new value, it is added to the back of the text, and thus to the top of the stack. When they type "/undo", it removes the text at the back, and thus at the top of the stack. The program essentially keeps a history of everything you've written as a stack and removes from the stack to undo.
 
+### Time Efficiency: Big O
+
+Here are some of the functions you can perform on a stack and their time complexity.
+
+|               | Python Equivalent   | Operation Efficiency   |
+|:--------------|:--------------------|:-----------------------|
+| Push new item | stack.append(value) | O(1)                   |
+| Pop item off  | stack.pop()         | O(1)                   |
+| Return size   | len(stack)          | O(1)                   |
+
+As you can see, the operations of a stack are very simplistic but extremely time efficient. It is a great option where applicable.
+
 ## Problem To Solve
 
 Write a program that uses a stack to check whether a string's parentheses are balanced. A string has balanced parentheses when each opening parenthesis is appropriately resolved with a closing parenthesis, and each closing parenthesis closes an opening parenthesis. Here are some examples of balanced parentheses:

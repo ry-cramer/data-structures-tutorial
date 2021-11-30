@@ -78,6 +78,63 @@ However, the location and order of items in a dynamic array is not as hard to ch
 
 In general, linked lists should be used in queues and situations where the size of the data changes often. Arrays are better for smaller sets of data where the size is more constant or where changing positions of data or generating random choices of items in the group is important.
 
+## Example: Queue
+
+Imagine a line of people are waiting in a line to pick up free ice cream. The rule is that one person can get one ice cream cone when they reach the front of the line, but some people want more than one ice cream. So, they get back in line once they have received their ice cream to get another one. Assume it takes one second for a person to grab their ice cream and get back in line if they want another one. How can we find out how long it will take for a certain person to get all of the ice cream they want?
+
+```python
+from collections import deque
+
+class Person:
+
+    def __init__(self, name, ice_cream):
+        self.name = name
+        self.ice_cream = ice_cream
+
+def add_to_queue(name, ice_cream, queue):
+    '''
+    Adds a new person to the back of the ice cream queue.
+    '''
+    person = Person(name, ice_cream)
+    queue.append(person)
+
+def get_ice_cream(queue):
+    '''
+    Removes a person from the queue and adds them to the back if they still want more ice cream.
+    '''
+    queue[0].ice_cream -= 1
+    if queue[0].ice_cream > 0:
+        queue.append(queue[0])
+    queue.popleft()
+
+def find_time(index, queue):
+    '''
+    Finds time it takes for specified name to get all ice cream they want.
+    '''
+    # Allows us to operate on our queue without disturbing the original queue
+    test_queue = deque()
+    for item in queue:
+        add_to_queue(item.name, item.ice_cream, test_queue)
+    person = test_queue[index]
+    seconds = 0
+    while person in test_queue:
+        get_ice_cream(test_queue)
+        seconds += 1
+    print(seconds)
+
+queue = deque()
+add_to_queue('Jasper', 3, queue)
+add_to_queue('Penelope', 1, queue)
+add_to_queue('Maverick', 4, queue)
+add_to_queue('Lincoln', 2, queue)
+find_time(0, queue) # Output: 8
+find_time(1, queue) # Output: 2
+find_time(2, queue) # Output: 10
+find_time(3, queue) # Output: 7
+```
+
+This example uses the deque library, which provides a linked list class. The first thing the program does is add people to the line. It then finds the amount of seconds it takes for the person at the index specified to get all of their ice cream. Notice it does this by inserting a new tail if the person wanted more ice cream, which is an O(1) operation. It then popped the head of the deque, which unlike in an array is also an O(1) operation. The queue is where the linked list shines because of this efficiency. The find_time function still operates in O(n) time, but this is because of the iterating of the get_ice_cream function and not because of the enqueue and dequeue itself.
+
 ## Problem to Solve
 
 Implement functions to delete and insert values into a linked list for a LinkedList class. The code below is provided for you to use to start your program:
