@@ -8,13 +8,13 @@ Here's an example of how a standard array is structured and saved in memory:
 
 ![](array.jpg)
 
-Each value is saved at a specific location in the list, which is represented by the index. Let's call one position in the array a **node**. For example, the value `7` is at index 0, and the value `98` is at index 4. if you want to see what value is stored third in the list, you search for the value with `value = array[2]`, which will return the value `6`.
+Each value is saved at a specific location in the list, which is represented by the index. For example, the value `7` is at index 0, and the value `98` is at index 4. if you want to see what value is stored third in the list, you search for the value with `value = array[2]`, which will return the value `6`.
 
 In contrast, let's look at how a linked list is stored in memory:
 
 ![](single_linked_list.png)
 
-A linked list is made up of nodes as well, but instead of containing the value and its position in the list, the node contains the value and a **pointer** to the next node in the linked list. For example, let's say we have a linked list with the numbers 3, 7, 5, 8, and 1. If I want to find the third value in the list, I have to start at the first node: 3. That node then points me to the next node: 7. Then that node finally points me to the node I'm looking for, and we can see that the value is 5. Instead of searching a specific position for a value, we have to **traverse** the linked list until we arrive at the value.
+A linked list is made up of **nodes**, which are objects that contain the value and a **pointer** to the next node in the linked list. For example, let's say we have a linked list with the numbers 3, 7, 5, 8, and 1. If I want to find the third value in the list, I have to start at the first node: 3. That node then points me to the next node: 7. Then that node finally points me to the node I'm looking for, and we can see that the value is 5. Instead of searching a specific position for a value, we have to **traverse** the linked list until we arrive at the value.
 
 ### Doubly Linked Lists
 
@@ -42,6 +42,16 @@ def traverse(self):
 
 This is a class function with a `head` attribute, which we use to access the linked list. Each node (including the head) is of the Node class, which stores its value (`data`) and its pointer (`next`). To traverse the list, start at the head, then open a loop to detect when the linked list is over. Print the value of the node, then change the current node to the node it's pointing to. Since the tail of the linked list points to None, the loop will end when current becomes None.
 
+For doubly linked lists, we are able to traverse both ways through the list. The program to do traverse backwards is the exact same as the program to traverse forwards, just with head swapped out with tail and next swapped out with previous.
+
+```python
+def traverse_reverse(self):
+	curr = self.tail
+	while curr is not None:
+		print(curr.data)
+		curr = curr.prev
+```
+
 ### Insertion
 
 There are two main steps to complete insertions to the middle or end of a singly linked list: find the node to insert the new node after, and change the pointers of that node and the new node to point to the proper places in the list. The first step can be completed by providing the node to insert after, but the second is slightly more complicated. 
@@ -49,13 +59,23 @@ There are two main steps to complete insertions to the middle or end of a singly
 1. Change the pointer of the new node to point to the node that was after the previous node
 2. Change the pointer of the previous node to point to the new node
 
-To insert to the head, there is a different but easier process. No need to find the place to put the node--we just need to make the node's pointer the old head and make it the new head.
+To insert to the head, there is a different but easier process. No need to find the place to put the node--we just need to make the node's pointer the old head and make it the new head. 
+
+For doubly linked lists, we have to have an extra step for all insertions, dealing with the pointer to the previous node. The steps for insertion to the middle, after finding the node to insert after, are this:
+
+1. Change the pointers of the new node to point to the node it is being inserted after and the node it's being inserted before
+2. Change the "next" pointer to the previous node to point to the new node
+3. Change the "previous" pointer of the next node to point to the new node
+
+To insert at the head, we just need to make the new node's "next" pointer the old head, make the old head's "previous" pointer the new node, and make the new node the new head. The process is exactly the same but reversed for inserting at the tail: make the new node's "previous" pointer the old tail, make the old tail's "next" pointer the new node, and make the new node the new tail.
 
 ### Deletion
 
 This operation is very similar to the insertion operation; we only need to find the node to delete, and then make the previous node's pointer the node after the node to be deleted. The node is effectively lost from memory.
 
 To delete the head, just make the second node the head node. We don't need to do anything else, since no other node points to the head node.
+
+For doubly linked lists, we need to change two pointers: the previous node's "next" pointer, and the next node's "previous" pointer. At the head, we just have to make the next node the new head and change its previous pointer to None. At the tail, we make the previous node the new tail and change its "next" pointer to None.
 
 ## Array or Linked List: Which is Better?
 
@@ -137,18 +157,19 @@ This example uses the deque library, which provides a linked list class. The fir
 
 ## Problem to Solve
 
-Implement functions to delete and insert values into a linked list for a LinkedList class. The code below is provided for you to use to start your program:
+Implement functions to delete and insert values into a doubly linked list for a LinkedList class. The code below is provided for you to use to start your program:
 
 ```python
 class LinkedList:
-
     class Node:
-        def __init__(self, data, next_node=None):
+        def __init__(self, data, next=None, prev=None):
             self.data = data
-            self.next_node = next_node
+            self.next = next
+            self.prev = prev
 
     def __init__(self):
         self.head = None
+        self.tail = None
     
     def insert_head(self, value):
         '''
@@ -156,8 +177,14 @@ class LinkedList:
         '''
         pass
             
+    def insert_tail(self, value):
+        '''
+        Inserts a new tail for linked list.
+        '''
+        pass
 
-    def insert_middle_tail(self, value, prev_value):
+
+    def insert_middle(self, value, prev_value):
         '''
         Inserts a new node after the first occurrence of the prev_value.
         '''
@@ -170,7 +197,13 @@ class LinkedList:
         '''
         pass
 
-    def delete_middle_tail(self, value):
+    def delete_tail(self):
+        '''
+        Deletes tail node and sets the previous node as tail node.
+        '''
+        pass
+
+    def delete_middle(self, value):
         '''
         Deletes first node with the specified value.
         '''
@@ -183,7 +216,7 @@ class LinkedList:
         curr = self.head
         while curr is not None:
             yield curr.data 
-            curr = curr.next_node
+            curr = curr.next
 
     def __str__(self):
         output = 'LinkedList: '
@@ -194,15 +227,19 @@ class LinkedList:
 
 ll = LinkedList()
 ll.insert_head(5)
-ll.insert_middle_tail(3, 5)
-ll.insert_middle_tail(6, 3)
+ll.insert_tail(3)
+ll.insert_middle(6, 5)
 ll.insert_head(9)
-ll.insert_middle_tail(8, 3)
-print(ll) # Expected output: LinkedList: 9 5 3 8 6
+ll.insert_middle(8, 5)
+ll.insert_tail(4)
+print(ll) # Expected output: LinkedList: 9 5 8 6 3 4
 
 ll.delete_head()
-ll.delete_middle_tail(6)
-ll.delete_middle_tail(3)
+ll.delete_middle(6)
+ll.delete_middle(3)
+print(ll) # Expected output: LinkedList: 5 8 4
+
+ll.delete_tail()
 print(ll) # Expected output: LinkedList: 5 8
 ```
 
